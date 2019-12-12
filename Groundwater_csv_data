@@ -1,0 +1,29 @@
+#Reading a csv file
+from pyspark.sql.types import *
+SlNoColumn=StructField("Sl.No",StringType(),True)
+Statecolumn=StructField("STATE",StringType(),True)
+Districtcolumn=StructField("District",StringType(),True)
+Rechargecolumn=StructField("Recharge from Rainfall during Monsoon season(Ham)",DoubleType(),True)
+
+WaterDataFrameSchema = StructType([SlNoColumn,
+Statecolumn, Districtcolumn,Rechargecolumn])
+
+Groundwater_data_frame=spark.read.csv('/FileStore/tables/FileStore/tables/Groundwater_dataset_three_columns-10925.csv', header=True, mode="DROPMALFORMED", schema=WaterDataFrameSchema)
+
+Groundwater_data_frame.show() #Show the data
+
+#Average groundwater in each state
+
+group_by_STATE=Groundwater_data_frame.groupBy('STATE')
+
+group_by_STATE.mean('Recharge from Rainfall during Monsoon season(Ham)').show()
+
+#Max and min Recharge from Rainfall record
+
+max_groundwater=Groundwater_data_frame.groupBy(['STATE','District'])
+max_groundwater.max('Recharge from Rainfall during Monsoon season(Ham)').show()
+
+
+
+
+#ilamentDataFrame = spark.read.csv('file:///home/pysparkbook/pysparkBookData/filamentData.csv',header=True, schema =FilamentDataFrameSchema, mode="DROPMALFORMED")
