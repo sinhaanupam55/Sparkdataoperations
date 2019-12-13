@@ -1,0 +1,39 @@
+#Reading a csv file
+from pyspark.sql.types import *
+from pyspark.sql.functions import col, avg
+SlNoColumn=StructField("Sl.No",StringType(),True)
+Statecolumn=StructField("STATE",StringType(),True)
+Districtcolumn=StructField("District",StringType(),True)
+Rechargecolumn=StructField("Recharge from Rainfall during Monsoon season(Ham)",DoubleType(),True)
+
+WaterDataFrameSchema = StructType([SlNoColumn,
+Statecolumn, Districtcolumn,Rechargecolumn])
+
+Groundwater_data_frame=spark.read.csv('/FileStore/tables/FileStore/tables/Groundwater_dataset_three_columns-10925.csv', header=True, mode="DROPMALFORMED", schema=WaterDataFrameSchema)
+
+Groundwater_data_frame.show() #Show the data
+
+#Average groundwater in each state####
+
+group_by_STATE=Groundwater_data_frame.groupBy('STATE')
+
+group_by_STATE.mean('Recharge from Rainfall during Monsoon season(Ham)').show()
+
+
+
+
+##Average recharge value throughout country##
+
+Groundwater_data_frame.describe('Recharge from Rainfall during Monsoon season(Ham)').show()
+
+
+##Max recharge in each state
+
+group_by_STATE.max('Recharge from Rainfall during Monsoon season(Ham)').show()
+
+##Min recharge in each state
+
+group_by_STATE.min('Recharge from Rainfall during Monsoon season(Ham)').show()
+
+
+
